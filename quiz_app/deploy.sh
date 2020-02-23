@@ -2,7 +2,7 @@
 IDENTITY_FILE="$HOME/.ssh/wps12th.pem"
 HOST="ubuntu@13.209.99.214"
 ORIGIN_SOURCE="$HOME/main_projects/quiz_app/"
-DEST_SOURCE="/home/ubuntu/main_projects/quiz_app"
+DEST_SOURCE="/home/ubuntu@13.209.99.214"
 SSH_CMD="ssh -i ${IDENTITY_FILE} ${HOST}"
 
 echo "== runserver 배포 =="
@@ -19,6 +19,7 @@ ${SSH_CMD} sudo rm -rf ${DEST_SOURCE}
 
 # 로컬에 있는 파일 업로드
 echo "upload local source"
+${SSH_CMD} mkdir -p ${DEST_SOURCE}
 scp -q -i "${IDENTITY_FILE}" -r "${ORIGIN_SOURCE}" ${HOST}:${DEST_SOURCE}
 
 
