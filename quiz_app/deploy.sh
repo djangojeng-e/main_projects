@@ -1,11 +1,19 @@
 #!/usr/bin/zsh
-IDENTITY_FILE="$HOME/.ssh/wps12th.pem"
-HOST="ubuntu@13.209.99.214"
+IDENTITY_FILE="~/.ssh/wps12th.pem"
+USER="ubuntu"
+HOST="13.209.99.214"
+TARGET=${USER}@${HOST}
 ORIGIN_SOURCE="$HOME/main_projects/quiz_app/"
-DEST_SOURCE="/home/ubuntu@13.209.99.214"
-SSH_CMD="ssh -i ${IDENTITY_FILE} ${HOST}"
+DEST_SOURCE="/home/ubuntu/main_projects/"
+SSH_CMD="ssh -i ${IDENTITY_FILE} ${TARGET}"
 
 echo "== runserver 배포 =="
+# 서버 초기 설정
+
+echo "apt update & upgrade & autoremove"
+${SSH_CMD} -C 'sudo apt update && sudo DEBIAN_FRONTEND=noninteractive apt dist-upgrade -y && apt -y autoremove'
+echo "apt install python3-pip"
+${SSH_CMD} -C 'sudo apt -y install python3-pip'
 
 # pip freeze
 echo "pip freeze"
@@ -19,7 +27,7 @@ ${SSH_CMD} sudo rm -rf ${DEST_SOURCE}
 
 # 로컬에 있는 파일 업로드
 echo "upload local source"
-${SSH_CMD} mkdir -p ${DEST_SOURCE}
+${SSH_CMD} mkdir ${DEST_SOURCE}
 scp -q -i "${IDENTITY_FILE}" -r "${ORIGIN_SOURCE}" ${HOST}:${DEST_SOURCE}
 
 

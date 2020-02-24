@@ -9,12 +9,16 @@ https://docs.djangoproject.com/en/2.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/2.2/ref/settings/
 """
-
+import json
 import os
+from os.path import dirname, abspath
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+ROOT_DIR = os.path.dirname(os.getcwd())
+secrets_path = os.path.join(ROOT_DIR, 'secrets.json')
+SECRETS = json.load(open(secrets_path))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
@@ -24,6 +28,17 @@ SECRET_KEY = '0)ze6co+xc=t+08uq(5gfd0kgsp+op!p-y(5tz8c%wi%5da05w'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
+
+# django-storages
+# django FileStorage로 S3Boto3Storage(AWS의 S3)를 사용
+
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+AWS_ACCESS_KEY_ID = SECRETS['AWS_ACCESS_KEY_ID']
+AWS_SECRET_ACCESS_KEY = SECRETS['AWS_SECRET_ACCESS_KEY']
+AWS_STORAGE_BUCKET_NAME = 'djangojengequiz'
+AWS_AUTO_CREATE_BUCKET = True
+AWS_S3_REGION_NAME = 'ap-northeast-2'
+
 
 ALLOWED_HOSTS = [
     'localhost',
@@ -78,16 +93,7 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'djangojeng-e-quiz',
-        'USER': 'djangojengequiz',
-        'PASSWORD': 'djangojenge062301',
-        'HOST': '',
-        'PORT': 5432,
-    }
-}
+DATABASES = SECRETS['DATABASES']
 
 
 # Password validation
